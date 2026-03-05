@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenSI - 신뢰받는 IT 파트너</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; color: #1a1a2e; }
+
+    /* 헤더 */
+    header {
+      background: #0f3460;
+      color: white;
+      padding: 0 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { color: #e94560; }
+    nav a { color: white; text-decoration: none; margin-left: 2rem; font-size: 0.9rem; opacity: 0.85; }
+    nav a:hover { opacity: 1; }
+
+    /* 히어로 */
+    .hero {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+      color: white;
+      padding: 120px 5% 80px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 3rem; line-height: 1.2; margin-bottom: 1.5rem; }
+    .hero h1 span { color: #e94560; }
+    .hero p { font-size: 1.2rem; opacity: 0.8; max-width: 600px; margin: 0 auto 2.5rem; }
+    .btn {
+      background: #e94560;
+      color: white;
+      padding: 14px 36px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #c73652; }
+
+    /* 서비스 */
+    .services { padding: 80px 5%; background: #f8f9fa; }
+    .section-title { text-align: center; font-size: 2rem; margin-bottom: 3rem; }
+    .section-title span { color: #e94560; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .card p { color: #666; font-size: 0.9rem; line-height: 1.6; }
+
+    /* 실적 */
+    .stats {
+      background: #0f3460;
+      color: white;
+      padding: 60px 5%;
+      text-align: center;
+    }
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+    .stat-item .num { font-size: 3rem; font-weight: 800; color: #e94560; }
+    .stat-item .label { font-size: 0.9rem; opacity: 0.7; margin-top: 0.3rem; }
+
+    /* 고객사 */
+    .clients { padding: 60px 5%; text-align: center; }
+    .client-logos {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      opacity: 0.4;
+    }
+    .client-logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: #333;
+    }
+
+    /* 푸터 */
+    footer {
+      background: #16213e;
+      color: #aaa;
+      padding: 40px 5%;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    footer strong { color: white; }
+
+    /* ===== 채팅 위젯 ===== */
+    #chat-bubble {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 56px;
+      height: 56px;
+      background: #e94560;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(233,69,96,0.4);
+      z-index: 9999;
+      transition: transform 0.2s;
+    }
+    #chat-bubble:hover { transform: scale(1.1); }
+    #chat-bubble svg { width: 26px; height: 26px; fill: white; }
+
+    #chat-window {
+      position: fixed;
+      bottom: 96px;
+      right: 28px;
+      width: 360px;
+      height: 500px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      z-index: 9998;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #chat-window.open { display: flex; }
+
+    .chat-header {
+      background: #0f3460;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      background: #e94560;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .chat-header-text .name { font-weight: 600; font-size: 0.95rem; }
+    .chat-header-text .status { font-size: 0.75rem; opacity: 0.7; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #f8f9fa;
+    }
+    .msg {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .msg.visitor {
+      background: #0f3460;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.admin {
+      background: white;
+      color: #1a1a2e;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .chat-input-area {
+      padding: 12px;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 8px;
+      background: white;
+    }
+    .chat-input-area input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+    .chat-input-area input:focus { border-color: #0f3460; }
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      background: #e94560;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .send-btn svg { width: 16px; height: 16px; fill: white; }
+
+    /* 이름 입력 폼 */
+    #name-form {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      justify-content: center;
+    }
+    #name-form h3 { font-size: 1rem; color: #1a1a2e; }
+    #name-form p { font-size: 0.85rem; color: #666; }
+    #name-form input {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    #name-form button {
+      background: #0f3460;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 11px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Open<span>SI</span></div>
+  <nav>
+    <a href="#">서비스</a>
+    <a href="#">포트폴리오</a>
+    <a href="#">회사소개</a>
+    <a href="#">문의</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>디지털 전환을<br><span>완성</span>하는 파트너</h1>
+  <p>OpenSI는 기업의 IT 인프라 구축부터 디지털 트랜스포메이션까지, 최적의 솔루션을 제공합니다.</p>
+  <a href="#" class="btn">프로젝트 문의하기</a>
+</section>
+
+<section class="services">
+  <h2 class="section-title">핵심 <span>서비스</span></h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>SI / 시스템 통합</h3>
+      <p>기업 맞춤형 시스템 설계 및 구축으로 업무 효율을 극대화합니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">☁️</div>
+      <h3>클라우드 마이그레이션</h3>
+      <p>온프레미스 환경을 안전하게 클라우드로 이전하고 운영합니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔒</div>
+      <h3>보안 솔루션</h3>
+      <p>취약점 진단부터 보안 체계 구축까지 통합 보안 서비스를 제공합니다.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>데이터 분석</h3>
+      <p>비즈니스 인사이트를 위한 데이터 파이프라인 및 BI 대시보드를 구축합니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="num">200+</div>
+      <div class="label">완료 프로젝트</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">98%</div>
+      <div class="label">고객 만족도</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">15년</div>
+      <div class="label">업력</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">80+</div>
+      <div class="label">전문 인력</div>
+    </div>
+  </div>
+</section>
+
+<section class="clients">
+  <h2 class="section-title">함께한 <span>고객사</span></h2>
+  <div class="client-logos">
+    <div class="client-logo">KORAIL</div>
+    <div class="client-logo">HanBank</div>
+    <div class="client-logo">MediCore</div>
+    <div class="client-logo">GovTech</div>
+    <div class="client-logo">StarMart</div>
+  </div>
+</section>
+
+<footer>
+  <p><strong>OpenSI</strong> | 서울특별시 강남구 테헤란로 123 | 대표: 홍길동</p>
+  <p style="margin-top:8px">사업자등록번호: 123-45-67890 | contact@opensi.kr | 02-1234-5678</p>
+</footer>
+
+<!-- 채팅 버블 -->
+<div id="chat-bubble" onclick="toggleChat()">
+  <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+</div>
+
+<!-- 채팅 창 -->
+<div id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">OS</div>
+    <div class="chat-header-text">
+      <div class="name">OpenSI 고객지원</div>
+      <div class="status">● 온라인</div>
+    </div>
+  </div>
+
+  <!-- 이름 입력 -->
+  <div id="name-form">
+    <h3>안녕하세요! 👋</h3>
+    <p>문의를 시작하기 전에 성함을 알려주세요.</p>
+    <input type="text" id="visitor-name" placeholder="홍길동" maxlength="20">
+    <button onclick="startChat()">대화 시작하기</button>
+  </div>
+
+  <!-- 채팅 영역 (숨김) -->
+  <div id="chat-body" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg admin">안녕하세요! OpenSI입니다. 무엇을 도와드릴까요? 😊</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." onkeydown="handleKey(event)">
+      <button class="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BACKEND = window.BACKEND_URL || 'http://localhost:3000';
+  const WS_BACKEND = BACKEND.replace('http', 'ws');
+
+  let conversationId = null;
+  let ws = null;
+  let isOpen = false;
+
+  function toggleChat() {
+    isOpen = !isOpen;
+    document.getElementById('chat-window').classList.toggle('open', isOpen);
+  }
+
+  async function startChat() {
+    const name = document.getElementById('visitor-name').value.trim() || '익명';
+    const res = await fetch(`${BACKEND}/api/conversations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ visitorName: name })
+    });
+    const conv = await res.json();
+    conversationId = conv.id;
+
+    document.getElementById('name-form').style.display = 'none';
+    const chatBody = document.getElementById('chat-body');
+    chatBody.style.display = 'flex';
+    chatBody.style.flexDirection = 'column';
+    chatBody.style.overflow = 'hidden';
+    chatBody.style.flex = '1';
+
+    connectWS();
+  }
+
+  function connectWS() {
+    ws = new WebSocket(`${WS_BACKEND}?type=visitor&conversationId=${conversationId}`);
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'message' && msg.sender === 'admin') {
+        appendMessage('admin', msg.content);
+      }
+    };
+  }
+
+  function appendMessage(sender, content) {
+    const div = document.createElement('div');
+    div.className = `msg ${sender}`;
+    div.textContent = content;
+    const container = document.getElementById('chat-messages');
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter') sendMessage();
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const content = input.value.trim();
+    if (!content || !ws) return;
+    ws.send(JSON.stringify({ type: 'message', conversationId, sender: 'visitor', content }));
+    appendMessage('visitor', content);
+    input.value = '';
+  }
+</script>
+</body>
+</html>
