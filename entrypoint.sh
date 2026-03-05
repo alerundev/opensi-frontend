@@ -1,9 +1,11 @@
 #!/bin/sh
-# 환경변수 BACKEND_URL을 HTML에 주입
-BACKEND="${BACKEND_URL:-http://localhost:3000}"
+set -e
 
-# __BACKEND_URL__ 플레이스홀더 치환
+BACKEND="${BACKEND_URL:-http://localhost:3000}"
+echo "BACKEND_URL = $BACKEND"
+
 sed -i "s|__BACKEND_URL__|${BACKEND}|g" /usr/share/nginx/html/index.html
 sed -i "s|__BACKEND_URL__|${BACKEND}|g" /usr/share/nginx/html/admin.html
 
+echo "치환 완료, nginx 시작..."
 exec nginx -g 'daemon off;'
